@@ -159,6 +159,59 @@ class BST {
     }
     return current.value;
   }
+
+  beforeMax() {
+    let max = this.root.value;
+    let beforeMax = this.root.left ? this.root.left.value : this.root.val;
+    const Walk = (node) => {
+      if (node.value > max) {
+        beforeMax = max;
+        max = node.value;
+      }
+      if (node.value > beforeMax && node.value < max) {
+        beforeMax = node.value;
+      }
+      if (node.right) Walk(node.right);
+      if (node.left) Walk(node.left);
+    };
+    if (!this.root.left && !this.root.right) {
+      throw 'err';
+    }
+    Walk(this.root);
+    return beforeMax;
+  }
+  remove(value) {
+    const removeNode = (node, value) => {
+      if (node == null) {
+        return null;
+      }
+      if (node.value == value) {
+        if (!node.left && !node.right) {
+          return null;
+        }
+        if (!node.left) {
+          return node.right;
+        }
+        if (!node.right) {
+          return node.left;
+        }
+        let tempNode = node.right;
+        while (tempNode.left) {
+          tempNode = tempNode.left;
+        }
+        node.value = tempNode.value;
+        node.right = removeNode(node.right, tempNode.value);
+        return node;
+      } else if (node.value > value) {
+        node.left = removeNode(node.left, value);
+        return node;
+      } else {
+        node.right = removeNode(node.right, value);
+        return node;
+      }
+    };
+    removeNode(this.root, value);
+  }
 }
 
 function sumation(Bst) {
@@ -182,46 +235,65 @@ function sumation(Bst) {
   }
 }
 
-const one = new Node(9);
-const two = new Node(4);
-const three = new Node(17);
-const four = new Node(3);
-const five = new Node(6);
-const six = new Node(10);
-const seven = new Node(22);
-const eight = new Node(5);
-const nine = new Node(7);
-const ten = new Node(20);
+function filesCheck(dir1, dir2) {
+  let obj = { sum1: 0, sum2: 0 };
+  const _walk = (node, sum) => {
+    if (node.left) {
+      _walk(node.left, sum);
+    }
+    if (node.right) {
+      _walk(node.right, sum);
+    }
+    if (!node.left && !node.right) {
+      obj[sum] = obj[sum] + 1;
+    }
+  };
+  _walk(dir1, sum1);
+  _walk(dir2, sum2);
 
-one.left = two;
-one.right = three;
-two.left = four;
-two.right = five;
-five.left = eight;
-five.right = nine;
-three.left = six;
-three.right = seven;
-seven.left = ten;
+  return obj.sum1 === obj.sum2;
+}
 
-const tree = new BinaryTree(one);
-console.log(sumation(tree));
+// const one = new Node(9);
+// const two = new Node(4);
+// const three = new Node(17);
+// const four = new Node(3);
+// const five = new Node(6);
+// const six = new Node(10);
+// const seven = new Node(22);
+// const eight = new Node(5);
+// const nine = new Node(7);
+// const ten = new Node(20);
+
+// one.left = two;
+// one.right = three;
+// two.left = four;
+// two.right = five;
+// five.left = eight;
+// five.right = nine;
+// three.left = six;
+// three.right = seven;
+// seven.left = ten;
+
+// const tree = new BinaryTree(one);
+// console.log(sumation(tree));
 // // console.log(tree.breadthFirstTraversal());
 // console.log(tree.breadthFirst());
 
-// const bst = new BST();
+const bst = new BST();
 
-// bst.add(9);
-// bst.add(4);
-// bst.add(17);
-// bst.add(3);
-// bst.add(6);
-// bst.add(22);
-// bst.add(5);
-// bst.add(7);
-// bst.add(20);
-// bst.add(10);
+bst.add(9);
+bst.add(4);
+bst.add(17);
+bst.add(3);
+bst.add(6);
+bst.add(22);
+bst.add(5);
+bst.add(7);
+bst.add(20);
+bst.add(10);
 
-// console.log(bst.maxValue());
+console.log(bst.beforeMax());
 
 class Node2 {
   constructor(value) {
