@@ -214,7 +214,7 @@ class BST {
   }
 }
 
-function sumation(Bst) {
+function oddSum(Bst) {
   let current = Bst.root;
   let count = 0;
   //   count = count + current.value;
@@ -254,46 +254,143 @@ function filesCheck(dir1, dir2) {
   return obj.sum1 === obj.sum2;
 }
 
-// const one = new Node(9);
-// const two = new Node(4);
-// const three = new Node(17);
-// const four = new Node(3);
-// const five = new Node(6);
-// const six = new Node(10);
-// const seven = new Node(22);
-// const eight = new Node(5);
-// const nine = new Node(7);
-// const ten = new Node(20);
+function sameTree(tree1, tree2) {
+  let node1 = tree1.root;
+  let node2 = tree2.root;
+  let arr1 = [];
+  let arr2 = [];
+  const _walk = (node, arr) => {
+    arr.push(node.value);
+    if (node.left) {
+      _walk(node.left, arr);
+    } else {
+      arr.push(null);
+    }
+    if (node.right) {
+      _walk(node.right, arr);
+    } else {
+      arr.push(null);
+    }
+  };
+  _walk(node1, arr1);
+  _walk(node2, arr2);
+  return check(arr1, arr2);
 
-// one.left = two;
-// one.right = three;
-// two.left = four;
-// two.right = five;
-// five.left = eight;
-// five.right = nine;
-// three.left = six;
-// three.right = seven;
-// seven.left = ten;
+  function check(arr1, arr2) {
+    let count = 0;
+    if (arr1.length == arr2.length) {
+      while (arr1[count] == arr2[count] && count < arr1.length) {
+        count++;
+      }
+      if (count == arr1.length) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }
+}
+
+function symmetricTree(tree) {
+  let answer = true;
+  const _walk = (node1, node2) => {
+    if ((!node1 && !node2) || !answer) {
+      return;
+    }
+    if (!node1 || !node2) {
+      answer = false;
+      return;
+    }
+    if (node1.value !== node2.value) {
+      answer = false;
+      return;
+    }
+    _walk(node1.left, node2.right);
+    _walk(node1.right, node2.left);
+  };
+  _walk(tree.root.left, tree.root.right);
+  return answer;
+}
+
+function maxDepth(tree) {
+  let maxValue = 1;
+  const _walk = (node, value) => {
+    if (value > maxValue) {
+      maxValue = value;
+    }
+    if (node.left) _walk(node.left, value + 1);
+    if (node.right) _walk(node.right, value + 1);
+  };
+  _walk(tree.root, maxValue);
+  return maxValue;
+}
+
+const one = new Node(9);
+const two = new Node(4);
+const three = new Node(17);
+const four = new Node(3);
+const five = new Node(6);
+const six = new Node(10);
+const seven = new Node(22);
+const eight = new Node(5);
+const nine = new Node(5);
+const ten = new Node(20);
+
+one.left = two;
+one.right = three;
+two.left = four;
+two.right = five;
+five.left = eight;
+five.right = nine;
+three.left = six;
+three.right = seven;
+seven.left = ten;
+
+const one1 = new Node(1);
+const two1 = new Node(2);
+const three1 = new Node(2);
+const four1 = new Node(3);
+const five1 = new Node(4);
+const six1 = new Node(4);
+const seven1 = new Node(3);
+const eight1 = new Node(5);
+const nine1 = new Node(5);
+const ten1 = new Node(20);
+
+one1.left = two1;
+one1.right = three1;
+two1.left = four1;
+two1.right = five1;
+five1.left = eight1;
+// five1.right = nine1;
+three1.left = eight1;
+three1.right = seven1;
+// seven1.left = ten1;
 
 // const tree = new BinaryTree(one);
-// console.log(sumation(tree));
+const tree2 = new BinaryTree(one1);
+// console.log(sameTree(tree, tree2));
+// console.log(symmetricTree(tree2));
+console.log(maxDepth(tree2));
+
+// console.log(oddSum(tree));
 // // console.log(tree.breadthFirstTraversal());
 // console.log(tree.breadthFirst());
 
-const bst = new BST();
+// const bst = new BST();
 
-bst.add(9);
-bst.add(4);
-bst.add(17);
-bst.add(3);
-bst.add(6);
-bst.add(22);
-bst.add(5);
-bst.add(7);
-bst.add(20);
-bst.add(10);
+// bst.add(9);
+// bst.add(4);
+// bst.add(17);
+// bst.add(3);
+// bst.add(6);
+// bst.add(22);
+// bst.add(5);
+// bst.add(7);
+// bst.add(20);
+// bst.add(10);
 
-console.log(bst.beforeMax());
+// console.log(bst.beforeMax());
 
 class Node2 {
   constructor(value) {
