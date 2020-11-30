@@ -212,6 +212,34 @@ class BST {
     };
     removeNode(this.root, value);
   }
+
+  isBalanced() {
+    return this.findMinHeight() >= this.findMaxHeight() - 1;
+  }
+  findMinHeight(node = this.root) {
+    if (node == null) {
+      return -1;
+    }
+    let left = this.findMinHeight(node.left);
+    let right = this.findMinHeight(node.right);
+    if (left < right) {
+      return left + 1;
+    } else {
+      return right + 1;
+    }
+  }
+  findMaxHeight(node = this.root) {
+    if (node == null) {
+      return -1;
+    }
+    let left = this.findMaxHeight(node.left);
+    let right = this.findMaxHeight(node.right);
+    if (left > right) {
+      return left + 1;
+    } else {
+      return right + 1;
+    }
+  }
 }
 
 function oddSum(Bst) {
@@ -324,54 +352,258 @@ function maxDepth(tree) {
   _walk(tree.root, maxValue);
   return maxValue;
 }
+function levelOrder(tree) {
+  let levelArr = [];
+  const _walk = (node, value) => {
+    value++;
+    if (!levelArr[value]) {
+      levelArr[value] = [];
+    }
+    levelArr[value].push(node.value);
+    if (node.left) _walk(node.left, value);
+    if (node.right) _walk(node.right, value);
+  };
+  _walk(tree.root, 0);
+  return levelArr.reverse();
+}
+function BstConverter(arr) {
+  let mid = Math.ceil(arr.length / 2);
 
-const one = new Node(9);
-const two = new Node(4);
-const three = new Node(17);
-const four = new Node(3);
-const five = new Node(6);
-const six = new Node(10);
-const seven = new Node(22);
-const eight = new Node(5);
-const nine = new Node(5);
-const ten = new Node(20);
+  let node = new Node(arr[mid]);
+  let count = 0;
+  const _walk = (node) => {
+    while (count < arr) {
+      if (arr[count] < node.value) {
+        if (!node.left) {
+          node.left = new Node(arr[count]);
+          count++;
+        } else if (node.left) {
+          _walk(node.left);
+        }
+      } else if (arr[count] > node.value) {
+        if (!node.right) {
+          node.right = new Node(arr[count]);
+          count++;
+        } else if (node.right) {
+          _walk(node.right);
+        }
+      } else {
+        return 'exisit value';
+      }
+    }
+    return node;
+  };
+  return _walk(node);
+}
+// function sortedArrayToBST(arr) {
+//   const _walk = (arr, left, right) => {
+//     if (left > right) return null;
+//     let mid = Math.ceil((left + right) / 2);
+//     let node = new Node(arr[mid]);
+//     node.left = _walk(arr, left, mid - 1);
+//     node.right = _walk(arr, mid + 1, right);
+//     return node;
+//   };
+//   return _walk(arr, 0, arr.length - 1);
+// }
+function BstConverter(arr) {
+  const _walk = (arr, left, right) => {
+    if (left > right) return null;
+    let mid = Math.ceil((left + right) / 2);
+    let node = new Node(arr[mid]);
+    node.left = _walk(arr, left, mid - 1);
+    node.right = _walk(arr, mid + 1, right);
+    return node;
+  };
+  return _walk(arr, 0, arr.length - 1);
+}
+
+function treeBalance(tree) {
+  return minHight(tree.root) >= maxHight(tree.root) - 1;
+}
+
+const minHight = (node) => {
+  if (!node) {
+    return -1;
+  }
+  let left = minHight(node.left);
+  let right = minHight(node.right);
+  if (left < right) {
+    return left + 1;
+  } else {
+    return right + 1;
+  }
+};
+const maxHight = (node) => {
+  if (!node) {
+    return -1;
+  }
+  let left = maxHight(node.left);
+  let right = maxHight(node.right);
+  if (left > right) {
+    return left + 1;
+  } else {
+    return right + 1;
+  }
+};
+
+function minDepth(tree) {
+  let minDepth;
+  const _walk = (node, value) => {
+    value++;
+    if (node.left) _walk(node.left, value);
+    if (node.right) _walk(node.right, value);
+    if (!node.left && !node.right && (!minDepth || value < minDepth)) {
+      minDepth = value;
+    }
+  };
+  _walk(tree.root, 0);
+  return minDepth;
+}
+
+function pathSum(tree, sumValue) {
+  let answer = false;
+
+  const _walk = (node, sum) => {
+    sum += node.value;
+    if (node.left) _walk(node.left, sum);
+    if (node.right) _walk(node.right, sum);
+    if (!node.left && !node.right && sum == sumValue) {
+      answer = true;
+    }
+  };
+  _walk(tree.root, 0);
+  return answer;
+}
+
+function paths(tree, sumValue) {
+  let pathArr = [];
+  const _walk = (node, sum, path) => {
+    sum += node.value;
+    if (node.left) {
+      _walk(node.left, sum, [...path, node.left.value]);
+    }
+    if (node.right) {
+      _walk(node.right, sum, [...path, node.right.value]);
+    }
+    if (!node.left && !node.right && sum == sumValue) {
+      pathArr.push(path);
+    }
+  };
+  _walk(tree.root, 0, [tree.root.value]);
+  return pathArr;
+}
+function beforeMax(tree) {
+  let max = tree.root.value;
+  let beforeMax = tree.root.left ? tree.root.left.value : tree.root.value;
+  const _walk = (node) => {
+    if (node.value > max) {
+      beforeMax = max;
+      max = node.value;
+    }
+    if (max > node.value && node.value > beforeMax) {
+      beforeMax = node.value;
+    }
+    if (node.left) {
+      _walk(node.left);
+    }
+    if (node.right) {
+      _walk(node.right);
+    }
+  };
+  _walk(tree.root);
+  return beforeMax;
+}
+function treeInverter(tree) {
+  let newTree = new BinaryTree();
+  const _walk = (node) => {
+    let newNode = new Node(node.value);
+
+    if (node.left) {
+      newNode.right = _walk(node.left);
+    }
+    if (node.right) {
+      newNode.left = _walk(node.right);
+    }
+    return newNode;
+  };
+  newTree.root = _walk(tree.root);
+  return newTree;
+}
+
+function mergrTrees(t1, t2) {
+  const tree = new BinaryTree();
+  const _walk = (node1, node2) => {
+    if (!node1 && !node2) return null;
+    let newNode = new Node(node1 ? node1.value : 0 + node2 ? node2.value : 0);
+    newNode.left = _walk(node1 ? node1.left : null, node2 ? node2.left : null);
+    newNode.right = _walk(node1 ? node1.right : null, node2 ? node2.right : null);
+    return newNode;
+  };
+  tree.root = _walk(t1.root, t2.root);
+  return tree;
+}
+
+const one = new Node(1);
+const two = new Node(3);
+const three = new Node(2);
+const four = new Node(5);
+// const five = new Node(6);
+// const six = new Node(10);
+// const seven = new Node(22);
+// const eight = new Node(5);
+// const nine = new Node(5);
+// const ten = new Node(20);
 
 one.left = two;
 one.right = three;
 two.left = four;
-two.right = five;
-five.left = eight;
-five.right = nine;
-three.left = six;
-three.right = seven;
-seven.left = ten;
+// two.right = five;
+// five.left = eight;
+// five.right = nine;
+// three.left = six;
+// three.right = seven;
+// seven.left = ten;
 
-const one1 = new Node(1);
-const two1 = new Node(2);
-const three1 = new Node(2);
-const four1 = new Node(3);
-const five1 = new Node(4);
-const six1 = new Node(4);
-const seven1 = new Node(3);
-const eight1 = new Node(5);
-const nine1 = new Node(5);
-const ten1 = new Node(20);
+const one1 = new Node(2);
+const two1 = new Node(1);
+const three1 = new Node(3);
+const four1 = new Node(4);
+const five1 = new Node(7);
+// const six1 = new Node(6);
+// const seven1 = new Node(9);
+// const eight1 = new Node(2);
+// const nine1 = new Node(1);
+// const ten1 = new Node(5);
 
 one1.left = two1;
 one1.right = three1;
-two1.left = four1;
-two1.right = five1;
-five1.left = eight1;
-// five1.right = nine1;
-three1.left = eight1;
-three1.right = seven1;
-// seven1.left = ten1;
+// two1.left = four1;
+two1.right = four1;
+// four1.left = seven1;
+// four1.right = eight1;
+// three1.left = six1;
+three1.right = five1;
+// six1.right = nine1;
+// six1.left = ten1;
 
-// const tree = new BinaryTree(one);
+// seven1.right = nine1;
+
+const tree = new BinaryTree(one);
 const tree2 = new BinaryTree(one1);
 // console.log(sameTree(tree, tree2));
 // console.log(symmetricTree(tree2));
-console.log(maxDepth(tree2));
+// console.log(maxDepth(tree2));
+// console.log(levelOrder(tree2));
+// let arr2 = [-10, -3, 0, 5, 9];
+// console.log(BstConverter(arr2));
+// console.log(treeBalance(tree2));
+// console.log(minDepth(tree2));
+// console.log(pathSum(tree2, 22));
+// console.log(paths(tree2, 22));
+// console.log(beforeMax(tree2));
+// console.log(treeInverter(tree2));
+console.log(mergrTrees(tree, tree2));
 
 // console.log(oddSum(tree));
 // // console.log(tree.breadthFirstTraversal());
@@ -390,7 +622,7 @@ console.log(maxDepth(tree2));
 // bst.add(20);
 // bst.add(10);
 
-// console.log(bst.beforeMax());
+// console.log(bst.findMinHeight(bst.roots));
 
 class Node2 {
   constructor(value) {
